@@ -37,11 +37,12 @@ This is a prototype that aims to show how the more familiar layers of (1) name l
 
 ### Why Trustless DNS?
 
-As all decentralization enthusiasts know, the vast majority of people are happy using trusted DNS system, and will be until ... they aren't happy ... and then ... they won't be able to do anything about.   There is massive risk that _trusted_ parties will use their increasingly dominant stack to:
- 1. connect "8.8.8.8" to Chrome 70 by default to collect user data in the name of faster Internet [read: increased revenue] or Attack:
- 2. buy Cloudflare to mask DNS entries for better web site security / user privacy [read: collect data]
+As all decentralization enthusiasts know, the vast majority of people are happy using trusted DNS system, and will be until ... they aren't happy ... and then ... they won't be able to do anything about it.   There is massive risk that _trusted_ parties like this one will use their increasingly dominant stack to:
+ 1. connect Public DNS systems (https://en.wikipedia.org/wiki/Google_Public_DNS) to other elements of the stack (https://en.wikipedia.org/wiki/Google_Chrome#User_tracking_concerns) Chrome 70 by default to collect user data in the name of faster Internet [read: increased revenue] or Attack:
+ 2. connect Google DNS, Cloudflare to mask DNS entries for better web site security / user privacy [read: collect data]
+or in malicious ways simple redirect DNS queries for direct financial gain.  
 
 Currently, the security of services (HTTP, Mail, FTP, messaging protocols,  etc.) run under domains may be attacked by:
  1. gaining access to Godaddy/Google/Cloudflare DNS with a username / password and hijacking the zone file editor
  2. gaining access to whatever is running 8.8.8.8 name server
-and running malicious services that trick users into thinking that they are interacting with the owner of the domain when they in fact are not.  (If `myetherwallet.com` or `etherscan.io` were hacked, the ETH community would basically be destroyed.)
+and running malicious services that trick users into thinking that they are interacting with the owner of the domain when they in fact are not.  (If `myetherwallet.com` or `etherscan.io` DNS were hacked, these centralized services would result in attacks where ETH would be stolen, fake transactions could be posted, etc.)
