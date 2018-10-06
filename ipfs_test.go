@@ -1,7 +1,6 @@
 package dns3
 
 import (
-	"fmt"
 	"sync"
 	"testing"
 	"time"
@@ -43,15 +42,6 @@ func TestServingListenAndServe(t *testing.T) {
 		t.Error("unexpected result for example.com", txt, "!= Hello example")
 	}
 	server.Shutdown()
-}
-
-func TestIPFSHashToBytes(t *testing.T) {
-	sample := "QmXkTBPtuJ1pTYRQ1U4AsSgAy1vE7r1EaMSAJ4pKMkZj89"
-	hashtype, digest, err := IPFSHashToBytes(sample)
-	if err != nil {
-		t.Fatalf("IPFSHashToBytes %v", err)
-	}
-	fmt.Printf("TestIPFS: %d %x (%d bytes)\n", hashtype, digest, len(digest))
 }
 
 /*
