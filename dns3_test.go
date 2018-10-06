@@ -3,6 +3,7 @@ package dns3
 import (
 	// "database/sql"
 
+	"encoding/hex"
 	"fmt"
 	"log"
 	"strings"
@@ -36,6 +37,7 @@ func TestDNS3(t *testing.T) {
 		log.Fatalf("Failed to instantiate a Simplestens contract: %v", err)
 	}
 
+	//
 	sample := "QmXkTBPtuJ1pTYRQ1U4AsSgAy1vE7r1EaMSAJ4pKMkZj89"
 	hashtype, ipfsHashByte, err := IPFSHashToBytes(sample)
 	if err != nil {
@@ -43,9 +45,24 @@ func TestDNS3(t *testing.T) {
 	}
 	fmt.Printf("TestIPFS: %d %x (%d bytes)\n", hashtype, ipfsHashByte, len(ipfsHashByte))
 
-	domainHash0 := Keccak256([]byte("eth.hacker"))
+	domain := "eth.hacker"
+	domainHash0 := Keccak256([]byte(domain))
 	var domainHash [32]byte
 	copy(domainHash[0:32], domainHash0[0:32])
+
+	// RegisterDomain
+	/*
+		tx, err := dns3.RegisterDomain(auth, domain)
+		if err != nil {
+			t.Fatalf("RegisterDomain %v", err)
+		}
+		fmt.Printf("tx: %v\n", tx)
+	*/
+
+	// SubmitZone
+	domainHash0, _ = hex.DecodeString("b63f160a960a1663c5cec1d7d02e67a44d368affd1d42be3b3554c34fd2dea4b")
+	//var domainHash [32]byte
+	copy(domainHash[:], domainHash0[:])
 	tx, err := dns3.SubmitZone(auth, ipfsHashByte, domainHash)
 	if err != nil {
 		t.Fatalf("submitZone %v", err)
