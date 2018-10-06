@@ -6,7 +6,16 @@ import (
 	"os/exec"
 
 	"github.com/btcsuite/btcutil/base58"
+	"github.com/wolkdb/go-ethereum/crypto/sha3"
 )
+
+func Keccak256(data ...[]byte) []byte {
+	hasher := sha3.NewKeccak256()
+	for _, b := range data {
+		hasher.Write(b)
+	}
+	return hasher.Sum(nil)
+}
 
 func IPFSHashToBytes(h string) (hashtype uint8, digest []byte, err error) {
 	ipfs := base58.Decode(h)

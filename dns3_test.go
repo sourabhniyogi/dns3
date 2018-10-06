@@ -28,12 +28,10 @@ func TestDNS3(t *testing.T) {
 	auth, err := bind.NewTransactor(strings.NewReader(key), "mdotm")
 	if err != nil {
 		log.Fatalf("Failed to create authorized transactor: %v", err)
-	} else {
-		ens.auth = auth
 	}
 
 	// Instantiate the contract and display its name
-	dns3, err := NewDNS3(common.HexToAddress("90fb0de606507e989247797c6a30952cae4d5cbe"), conn)
+	dns3, err := NewDNS3(common.HexToAddress("0x8116a77cf44457a455ffc24001c521ddeebc9606"), conn)
 	if err != nil {
 		log.Fatalf("Failed to instantiate a Simplestens contract: %v", err)
 	}
@@ -43,10 +41,12 @@ func TestDNS3(t *testing.T) {
 	if err != nil {
 		t.Fatalf("IPFSHashToBytes %v", err)
 	}
-	fmt.Printf("TestIPFS: %d %x (%d bytes)\n", hashtype, digest, len(digest))
+	fmt.Printf("TestIPFS: %d %x (%d bytes)\n", hashtype, ipfsHashByte, len(ipfsHashByte))
 
-	domainHash := Keccak256("eth.hacker")
-	tx, err := dns3.SubmitZone(nil, ipfsHashByte, domainHash)
+	domainHash0 := Keccak256([]byte("eth.hacker"))
+	var domainHash [32]byte
+	copy(domainHash[0:32], domainHash0[0:32])
+	tx, err := dns3.SubmitZone(auth, ipfsHashByte, domainHash)
 	if err != nil {
 		t.Fatalf("submitZone %v", err)
 	}

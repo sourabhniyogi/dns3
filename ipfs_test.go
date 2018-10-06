@@ -8,18 +8,18 @@ import (
 	"github.com/miekg/dns"
 )
 
-func AnotherHelloServer(w ResponseWriter, req *dns.Msg) {
+func AnotherHelloServer(w dns.ResponseWriter, req *dns.Msg) {
 	m := new(dns.Msg)
 	m.SetReply(req)
 
 	m.Extra = make([]dns.RR, 1)
-	m.Extra[0] = &dns.TXT{Hdr: RR_Header{Name: m.Question[0].Name, Rrtype: TypeTXT, Class: ClassINET, Ttl: 0}, Txt: []string{"Hello example"}}
+	m.Extra[0] = &dns.TXT{Hdr: dns.RR_Header{Name: m.Question[0].Name, Rrtype: dns.TypeTXT, Class: dns.ClassINET, Ttl: 0}, Txt: []string{"Hello example"}}
 	w.WriteMsg(m)
 }
 
 func TestServingListenAndServe(t *testing.T) {
-	HandleFunc("example.com.", AnotherHelloServer)
-	defer HandleRemove("example.com.")
+	dns.HandleFunc("example.com.", AnotherHelloServer)
+	defer dns.HandleRemove("example.com.")
 
 	waitLock := sync.Mutex{}
 	server := &dns.Server{Addr: ":0", Net: "udp", ReadTimeout: time.Hour, WriteTimeout: time.Hour, NotifyStartedFunc: waitLock.Unlock}
