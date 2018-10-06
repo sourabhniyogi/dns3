@@ -9,6 +9,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/btcsuite/btcutil/base58"
 	_ "github.com/mattn/go-sqlite3"
 	// "encoding/hex"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
@@ -38,13 +39,6 @@ func TestDNS3(t *testing.T) {
 	}
 
 	//
-	sample := "QmXkTBPtuJ1pTYRQ1U4AsSgAy1vE7r1EaMSAJ4pKMkZj89"
-	hashtype, ipfsHashByte, err := IPFSHashToBytes(sample)
-	if err != nil {
-		t.Fatalf("IPFSHashToBytes %v", err)
-	}
-	fmt.Printf("TestIPFS: %d %x (%d bytes)\n", hashtype, ipfsHashByte, len(ipfsHashByte))
-
 	domain := "eth.hacker"
 	domainHash0 := Keccak256([]byte(domain))
 	var domainHash [32]byte
@@ -59,11 +53,14 @@ func TestDNS3(t *testing.T) {
 		fmt.Printf("tx: %v\n", tx)
 	*/
 
+	sample := "QmXkTBPtuJ1pTYRQ1U4AsSgAy1vE7r1EaMSAJ4pKMkZj89"
+	ipfs := base58.Decode(sample)
+
 	// SubmitZone
 	domainHash0, _ = hex.DecodeString("b63f160a960a1663c5cec1d7d02e67a44d368affd1d42be3b3554c34fd2dea4b")
 	//var domainHash [32]byte
 	copy(domainHash[:], domainHash0[:])
-	tx, err := dns3.SubmitZone(auth, ipfsHashByte, domainHash)
+	tx, err := dns3.SubmitZone(auth, ipfs, domainHash)
 	if err != nil {
 		t.Fatalf("submitZone %v", err)
 	}
