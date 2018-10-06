@@ -21,27 +21,19 @@ almost no one is aware of (3), but all of this comes together in a few hundred m
 
 We believe the answer is **YES**.   
 
-Recently, the lowest level (3) has been developed into a new blockchain protocol by handshake.org, where new TLDs (e.g. `.hacker`) may be secured.   The blockchain (with its own currency, POW consensus later) maintains a provable authenticated data structure where the keys to the authenticated data structure access.  Transactions of { `BID`, `REVOKE`, ... }  are managed in a _trustless_ manner.
-
-This is a prototype that aims to show how the more familiar layers of (1) name look up + (2) zone files of domains can managed in a trustless way with 2 different State Models:
-* State Model 1: Ethereum DNS3 Smart contract.  
-* State Model 2: DNS3 Blockchain.
-In both cases, zone files are held in decentralized storage (IPFS), where a zone file is represented by file hashes [this snippet on IPFS](https://cloudflare-ipfs.com/ipfs/QmXkTBPtuJ1pTYRQ1U4AsSgAy1vE7r1EaMSAJ4pKMkZj89) and move from state `QmXkTBPtuJ1pTYRQ1U4AsSgAy1vE7r1EaMSAJ4pKMkZj89` to state `QmWMhdVYpGYeS33BNNAXSNwbiAVCkaaiFgeSAAiywwZP3J`  When the DNS entries for a domain changes to have a new entry like:
- ```
- www.eth.hacker.   3600    IN  A   104.154.155.234
- ```
-is managed with a state change either
-
-
-  * Owners can bid/win/transfer their domain (e.g. `eth.hacker`).  Following Handshake, this can be done with second-price auctions
-  * Owners can update their domain's zone file (e.g. containing `www.eth.hacker`) by submitting a new transaction containing a valid zone hash:
+Recently, the lowest level (3) has been developed into a new blockchain protocol by handshake.org, where new TLDs (e.g. `.hacker`) may be secured.    This DNS3 project is a prototype that aims to show how the more familiar layers of (1) name look up + (2) zone files of domains can managed in a _trustless_ way with 2 different State Models:
+* _Ethereum State Model 1_: A DNS3 Smart contract manages Zone file hashes, where owners register domains, update domain zone files, and can sell their domain.  At the core, a zone file is update recorded with a transaction submitted to the Ethereum contract:
+```
+> eth.submitZone('eth.hacker', `QmWMhdVYpGYeS33BNNAXSNwbiAVCkaaiFgeSAAiywwZP3J`)
+```
+* _DNS3 State Model 2_: A DNS3 Blockchain manages domain-zone file hashes in a *Sparse Merkle Tree*:
 ```
 > dns3.submitZone('eth.hacker', `QmWMhdVYpGYeS33BNNAXSNwbiAVCkaaiFgeSAAiywwZP3J`)
 ```
-
-In the DNS3 model, instead of trusting 8.8.8.8, everyone runs a `dns3` node (adapted from `dnsmasq`) which looks up a specific record to get zone data for different domains in two different models:
-
-
+In both model, zone files are held in decentralized storage (IPFS), where a zone file is uniquely retrievable and verifiable by their zone file hash [this snippet on IPFS](https://cloudflare-ipfs.com/ipfs/QmXkTBPtuJ1pTYRQ1U4AsSgAy1vE7r1EaMSAJ4pKMkZj89) and move from state `QmXkTBPtuJ1pTYRQ1U4AsSgAy1vE7r1EaMSAJ4pKMkZj89` to state `QmWMhdVYpGYeS33BNNAXSNwbiAVCkaaiFgeSAAiywwZP3J` when the DNS entries for a domain changes to have a new entry like:
+ ```
+ www.eth.hacker.   3600    IN  A   104.154.155.234
+ ```
 
 Each model is described below.
 
@@ -55,18 +47,15 @@ A contract posted on Ethereum holds the latest zone hash for every domain.  The 
 ```
 The Ethereum Smart Contract returns back a 32-byte hash that is used by the local `dns3` node to retrieve the zone file from decentralized storage (an IPFS hash).  
 
-To prevent domain squatting, we adapt a "Radical Markets" technique proposed by Weyl and Posner:
+To prevent domain squatting (common to NameCoin, ENS, and the current Domain Name Registration system), we adapt a "Radical Markets" technique proposed by Weyl and Posner:
 * domain name registrants specify a _sale price_ when they register.  When they do so, they commit to paying a fixed percentage of that sale price every 1MM blocks.  Otherwise, anyone can pay that _sale price_ and secure the rights to the domain.  A grace period of 7 days is offered to ensure that a transition can be smooth, or for the current owner to increase his sale price to override the transfer, but the override cost must be at least 10x higher.      
 * Example: Alice purchases a new domain `dns3.hacker` for a price of .1 ETH but sets her _sale price_ to 10ETH.  Bob sees `dns3.hacker` and submits a `requestPurchase("dns3.hacker")` transaction for 10ETH to get it.   If Alice does nothing, after 7 days, Bob (or anyone) can finalize the purchase by calling `finalizePurchase("dns3.hacker")`.  If Alice pays 100ETH to keep the `dns3.hacker` domain, she (and only she) can call `challengePurchase("dns3.hacker")`
 
-
 Implementation:
-1. `dns3.sol` - the Ethereum contract to manage the key operations: `getZone`, `submitZone`
+1. `DNS3.sol` - the Ethereum contract to manage the key operations: `getZone`, `submitZone`
 
-2. `dnsmasq` fork to do local DNS lookups by calling  
-```
-git clone git://thekelleys.org.uk/dnsmasq.git
-```
+2. Run a server locally from `github.com/miekg/dns`.  When a DNS lookup is performed, 
+
 3. `submitzone.html`: Javascript-based UI for domain owner to submit new zone by posting `submitZone` transaction
 
 
