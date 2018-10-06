@@ -1,0 +1,240 @@
+[
+    {
+        "constant": false,
+        "inputs": [
+            {
+                "name": "domainHash",
+                "type": "bytes32"
+            },
+            {
+                "name": "newOwner",
+                "type": "address"
+            }
+        ],
+        "name": "transferDomain",
+        "outputs": [
+            {
+                "name": "",
+                "type": "bool"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "constant": true,
+        "inputs": [],
+        "name": "currentBlkNum",
+        "outputs": [
+            {
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "constant": false,
+        "inputs": [
+            {
+                "name": "domainHash",
+                "type": "bytes32"
+            }
+        ],
+        "name": "releaseDomain",
+        "outputs": [
+            {
+                "name": "",
+                "type": "bool"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "constant": false,
+        "inputs": [
+            {
+                "name": "_domain",
+                "type": "string"
+            }
+        ],
+        "name": "registerDomain",
+        "outputs": [
+            {
+                "name": "",
+                "type": "bool"
+            }
+        ],
+        "payable": true,
+        "stateMutability": "payable",
+        "type": "function"
+    },
+    {
+        "constant": true,
+        "inputs": [],
+        "name": "authority",
+        "outputs": [
+            {
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "constant": false,
+        "inputs": [
+            {
+                "name": "ipfsHashByte",
+                "type": "bytes"
+            },
+            {
+                "name": "blkNum",
+                "type": "uint256"
+            }
+        ],
+        "name": "updateDomain",
+        "outputs": [],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "constant": true,
+        "inputs": [
+            {
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "name": "PublishedDomain",
+        "outputs": [
+            {
+                "name": "digest",
+                "type": "bytes32"
+            },
+            {
+                "name": "hashFunction",
+                "type": "uint8"
+            },
+            {
+                "name": "size",
+                "type": "uint8"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "constructor"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": false,
+                "name": "Domain",
+                "type": "string"
+            },
+            {
+                "indexed": true,
+                "name": "DomainHash",
+                "type": "bytes32"
+            },
+            {
+                "indexed": true,
+                "name": "Owner",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "name": "Deposit",
+                "type": "uint256"
+            }
+        ],
+        "name": "DomainClaim",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "name": "DomainHash",
+                "type": "bytes32"
+            },
+            {
+                "indexed": true,
+                "name": "originalOwner",
+                "type": "address"
+            },
+            {
+                "indexed": true,
+                "name": "newOwner",
+                "type": "address"
+            }
+        ],
+        "name": "DomainTransfer",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "name": "DomainHash",
+                "type": "bytes32"
+            },
+            {
+                "indexed": true,
+                "name": "Owner",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "name": "halfRefund",
+                "type": "uint256"
+            }
+        ],
+        "name": "DomainRelease",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "name": "blkNum",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "name": "digest",
+                "type": "bytes32"
+            },
+            {
+                "indexed": false,
+                "name": "hashFunction",
+                "type": "uint8"
+            },
+            {
+                "indexed": false,
+                "name": "size",
+                "type": "uint8"
+            }
+        ],
+        "name": "DomainUpdate",
+        "type": "event"
+    }
+]
