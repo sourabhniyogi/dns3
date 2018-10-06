@@ -17,7 +17,7 @@ import (
 
 func TestDNS3(t *testing.T) {
 	// Create an IPC based RPC connection to a remote node
-	conn, err := ethclient.Dial("http://infura.com:8545/")
+	conn, err := ethclient.Dial("https://rinkeby.infura.io/metamask")
 
 	if err != nil {
 		log.Fatalf("Failed to connect to the Ethereum client: %v", err)
