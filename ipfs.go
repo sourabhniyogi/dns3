@@ -25,3 +25,9 @@ func submitZone(fn string) {
 	err := cmd.Run()
 	log.Printf("Command finished with error: %v", err)
 }
+
+func getZone(fn string) {
+	cmd := exec.Command("ipfs", "cat", fn)
+	err := cmd.Run()
+	log.Printf("Command finished with error: %v", err)
+}
