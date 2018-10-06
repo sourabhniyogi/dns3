@@ -1,5 +1,93 @@
 [
     {
+        "constant": true,
+        "inputs": [
+            {
+                "name": "",
+                "type": "bytes32"
+            }
+        ],
+        "name": "Buyer",
+        "outputs": [
+            {
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "constant": true,
+        "inputs": [
+            {
+                "name": "",
+                "type": "bytes32"
+            }
+        ],
+        "name": "OwnedDomain",
+        "outputs": [
+            {
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "constant": false,
+        "inputs": [
+            {
+                "name": "ipfsHashByte",
+                "type": "bytes"
+            },
+            {
+                "name": "domainHash",
+                "type": "bytes32"
+            }
+        ],
+        "name": "submitZone",
+        "outputs": [
+            {
+                "name": "",
+                "type": "bool"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "constant": true,
+        "inputs": [
+            {
+                "name": "domainHash",
+                "type": "bytes32"
+            }
+        ],
+        "name": "getZone",
+        "outputs": [
+            {
+                "name": "digest",
+                "type": "bytes32"
+            },
+            {
+                "name": "hashFunction",
+                "type": "uint8"
+            },
+            {
+                "name": "size",
+                "type": "uint8"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
         "constant": false,
         "inputs": [
             {
@@ -7,11 +95,30 @@
                 "type": "bytes32"
             },
             {
-                "name": "newOwner",
+                "name": "_canBuy",
                 "type": "address"
             }
         ],
-        "name": "transferDomain",
+        "name": "approvedBuyer",
+        "outputs": [
+            {
+                "name": "",
+                "type": "bool"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "constant": false,
+        "inputs": [
+            {
+                "name": "domainHash",
+                "type": "bytes32"
+            }
+        ],
+        "name": "cancelBuyer",
         "outputs": [
             {
                 "name": "",
@@ -34,6 +141,25 @@
         ],
         "payable": false,
         "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "constant": false,
+        "inputs": [
+            {
+                "name": "domainHash",
+                "type": "bytes32"
+            }
+        ],
+        "name": "acquireDomain",
+        "outputs": [
+            {
+                "name": "",
+                "type": "bool"
+            }
+        ],
+        "payable": true,
+        "stateMutability": "payable",
         "type": "function"
     },
     {
@@ -76,6 +202,79 @@
     },
     {
         "constant": true,
+        "inputs": [
+            {
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "name": "PublishedDomains",
+        "outputs": [
+            {
+                "name": "digest",
+                "type": "bytes32"
+            },
+            {
+                "name": "hashFunction",
+                "type": "uint8"
+            },
+            {
+                "name": "size",
+                "type": "uint8"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "constant": true,
+        "inputs": [
+            {
+                "name": "",
+                "type": "bytes32"
+            }
+        ],
+        "name": "DomainName",
+        "outputs": [
+            {
+                "name": "",
+                "type": "string"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "constant": true,
+        "inputs": [
+            {
+                "name": "",
+                "type": "bytes32"
+            }
+        ],
+        "name": "ZoneHash",
+        "outputs": [
+            {
+                "name": "digest",
+                "type": "bytes32"
+            },
+            {
+                "name": "hashFunction",
+                "type": "uint8"
+            },
+            {
+                "name": "size",
+                "type": "uint8"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "constant": true,
         "inputs": [],
         "name": "authority",
         "outputs": [
@@ -100,37 +299,10 @@
                 "type": "uint256"
             }
         ],
-        "name": "updateDomain",
+        "name": "updateDomains",
         "outputs": [],
         "payable": false,
         "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "constant": true,
-        "inputs": [
-            {
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "name": "PublishedDomain",
-        "outputs": [
-            {
-                "name": "digest",
-                "type": "bytes32"
-            },
-            {
-                "name": "hashFunction",
-                "type": "uint8"
-            },
-            {
-                "name": "size",
-                "type": "uint8"
-            }
-        ],
-        "payable": false,
-        "stateMutability": "view",
         "type": "function"
     },
     {
@@ -183,6 +355,11 @@
                 "indexed": true,
                 "name": "newOwner",
                 "type": "address"
+            },
+            {
+                "indexed": false,
+                "name": "newDeposit",
+                "type": "uint256"
             }
         ],
         "name": "DomainTransfer",
@@ -234,7 +411,51 @@
                 "type": "uint8"
             }
         ],
-        "name": "DomainUpdate",
+        "name": "DomainsUpdate",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "name": "DomainHash",
+                "type": "bytes32"
+            },
+            {
+                "indexed": false,
+                "name": "digest",
+                "type": "bytes32"
+            },
+            {
+                "indexed": false,
+                "name": "hashFunction",
+                "type": "uint8"
+            },
+            {
+                "indexed": false,
+                "name": "size",
+                "type": "uint8"
+            }
+        ],
+        "name": "ZoneUpdate",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "name": "DomainHash",
+                "type": "bytes32"
+            },
+            {
+                "indexed": true,
+                "name": "approvedBuyer",
+                "type": "address"
+            }
+        ],
+        "name": "ApprovedBuyer",
         "type": "event"
     }
 ]

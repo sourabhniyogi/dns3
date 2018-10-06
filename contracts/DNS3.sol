@@ -21,15 +21,15 @@
  * @dev Rough DNS3 with IPFS Multihash support.
  */
 
-pragma solidity ^0.4.25;
-
 import "./SafeMath.sol";
-
+pragma solidity ^0.4.25;
 contract DNS3 {
     event DomainClaim(string Domain, bytes32 indexed DomainHash, address indexed Owner, uint256 Deposit);
-    event DomainTransfer(bytes32 indexed DomainHash, address indexed originalOwner, address indexed newOwner);
+    event DomainTransfer(bytes32 indexed DomainHash, address indexed originalOwner, address indexed newOwner, uint256 newDeposit);
     event DomainRelease(bytes32 indexed DomainHash, address indexed Owner, uint256 halfRefund);
-    event DomainUpdate(uint256 indexed blkNum, bytes32 digest, uint8 hashFunction,uint8 size);
+    event DomainsUpdate(uint256 indexed blkNum, bytes32 digest, uint8 hashFunction,uint8 size);
+    event ZoneUpdate(bytes32 indexed DomainHash, bytes32 digest, uint8 hashFunction,uint8 size);
+    event ApprovedBuyer(bytes32 indexed DomainHash, address indexed approvedBuyer);
 
     struct Multihash {
         bytes32 digest;
@@ -38,12 +38,17 @@ contract DNS3 {
     }
 
     using SafeMath for uint256;
-    mapping(bytes32=>address) OwnedDomain;
+    mapping(bytes32=>string) public DomainName;
+    mapping(bytes32=>address) public OwnedDomain;
+    mapping(bytes32=>address) public Buyer;
     mapping(bytes32=>uint256) DomainDeposit;
-    mapping(uint256=>Multihash) public PublishedDomain;
+    mapping(bytes32=>Multihash) public ZoneHash;
+    mapping(uint256=>Multihash) public PublishedDomains;
+
 
     uint256 public currentBlkNum;
     address public authority;
+
     modifier isAuthority() {
         require(msg.sender == authority);
         _;
@@ -57,17 +62,41 @@ contract DNS3 {
     function registerDomain(string _domain) public payable returns (bool) {
         bytes32 domainHash = keccak256(abi.encodePacked(_domain));
         require(OwnedDomain[domainHash] == 0, 'Domain already registered');
+        DomainName[domainHash] = _domain;
         OwnedDomain[domainHash] = msg.sender;
         emit DomainClaim(_domain, domainHash, msg.sender, msg.value);
         DomainDeposit[domainHash] = DomainDeposit[domainHash].add(msg.value);
         return true;
     }
 
+    function approvedBuyer(bytes32 domainHash, address _canBuy) public returns (bool) {
+        require(OwnedDomain[domainHash] == msg.sender, 'Unauthorized approval');
+        Buyer[domainHash] = _canBuy;
+        emit ApprovedBuyer(domainHash, _canBuy);
+        return true;
+    }
 
-    function transferDomain(bytes32 domainHash, address newOwner) public returns (bool) {
-        require(OwnedDomain[domainHash] == msg.sender && newOwner != 0x0, 'Unauthorized transfer');
-        OwnedDomain[domainHash] = newOwner;
-        emit DomainTransfer(domainHash, msg.sender, newOwner);
+    function cancelBuyer(bytes32 domainHash) public returns (bool) {
+        require(OwnedDomain[domainHash] == msg.sender, 'Unauthorized transfer');
+        Buyer[domainHash] = 0x0;
+        return true;
+    }
+
+    function acquireDomain(bytes32 domainHash) public payable returns (bool) {
+        require(Buyer[domainHash] == msg.sender && DomainDeposit[domainHash].mul(4) >= msg.value, 'Invalid Purchase');
+        address seller = OwnedDomain[domainHash];
+
+        uint256 newDeposit = msg.value.div(4); //25% were kept in contract
+        uint256 revenue = DomainDeposit[domainHash].add(msg.value).sub(newDeposit);
+
+        DomainDeposit[domainHash] = 0;
+        seller.transfer(revenue);
+
+        OwnedDomain[domainHash] = msg.sender;
+        DomainDeposit[domainHash] = newDeposit;
+
+        delete Buyer[domainHash];
+        emit DomainTransfer(domainHash, seller, msg.sender, newDeposit);
         return true;
     }
 
@@ -82,7 +111,23 @@ contract DNS3 {
         return true;
     }
 
-    function updateDomain(bytes ipfsHashByte, uint256 blkNum) public isAuthority {
+    function submitZone(bytes ipfsHashByte, bytes32 domainHash) public returns (bool) {
+        require(OwnedDomain[domainHash] == msg.sender, 'Unauthorized zoneUpdate');
+        Multihash memory ipfsHash = _setMultihash(ipfsHashByte);
+        ZoneHash["domainHash"] = ipfsHash;
+        emit ZoneUpdate(domainHash, ipfsHash.digest, ipfsHash.hashFunction, ipfsHash.size);
+        return true;
+
+    }
+
+
+    function getZone(bytes32 domainHash) public view returns (bytes32 digest, uint8 hashFunction,uint8 size) {
+        require(OwnedDomain[domainHash] != 0, "Domain not registered");
+        Multihash memory ipfsHash = ZoneHash["domainHash"];
+        return (ipfsHash.digest, ipfsHash.hashFunction, ipfsHash.size);
+    }
+
+    function updateDomains(bytes ipfsHashByte, uint256 blkNum) public isAuthority {
          //require(PublishedDomain[blkNum] != 0, "Multihash already set");
          //require(currentBlkNum.add(1) != PublishedDomain[blkNum], "Multihash already set");
          uint16 hashPart;
@@ -91,11 +136,22 @@ contract DNS3 {
              hashPart := div(mload(add(ipfsHashByte, 32)), exp(256, 30))
              digest := mload(add(ipfsHashByte, 2))
          }
-         Multihash memory ipfsHash;
-         ipfsHash.digest = digest;
-         ipfsHash.hashFunction = uint8(hashPart / 256);
-         ipfsHash.size = uint8(hashPart % 256);
-         PublishedDomain[blkNum] = ipfsHash;
-         emit DomainUpdate(blkNum, ipfsHash.digest, ipfsHash.hashFunction, ipfsHash.size);
+         Multihash memory ipfsHash = _setMultihash(ipfsHashByte);
+         PublishedDomains[blkNum] = ipfsHash;
+         emit DomainsUpdate(blkNum, ipfsHash.digest, ipfsHash.hashFunction, ipfsHash.size);
+    }
+
+    function _setMultihash(bytes ipfsHashByte) private pure returns (Multihash memory) {
+        uint16 hashPart;
+        bytes32 digest;
+        assembly {
+             hashPart := div(mload(add(ipfsHashByte, 32)), exp(256, 30))
+             digest := mload(add(ipfsHashByte, 2))
+        }
+        Multihash memory ipfsHash;
+        ipfsHash.digest = digest;
+        ipfsHash.hashFunction = uint8(hashPart / 256);
+        ipfsHash.size = uint8(hashPart % 256);
+        return ipfsHash;
     }
 }
