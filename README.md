@@ -90,3 +90,5 @@ We believe this trustless DNS3.0 approach can be adapted for new TLDs managed en
 This technique incentivizes domain owners to set their sale price to be within an order of magnitude of what they value it at.  If Alice rushes to buy 80,000 English word domains for .01 ETH each and sets a sale price of 10 ETH thinking she'll make killing, she must pay "taxes" based on the 1 ETH.  On the other hand, if some old company comes by and wishes to pay 10 ETH for it, they may do so, but Alice does not benefit massively for having sat on it.
 
 ### Welcome to Trustless DNS3.0 with Ethereum!!!
+
+[Presentation](https://docs.google.com/presentation/d/1prPK2UMvrQbobGuvuGjdENwSL8DlJSNjIcb22OCWGzQ/edit#slide=id.g432dd62664_0_204)
