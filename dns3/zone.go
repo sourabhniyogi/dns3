@@ -95,7 +95,7 @@ func ParseDomain(request string) (domain string, tld string, err error) {
 		return domain, tld, fmt.Errorf("Invalid domain")
 	}
 	tld = pieces[len(pieces)-1]
-	domainarr := pieces[len(pieces)-2 : len(pieces)-1]
+	domainarr := pieces[len(pieces)-2 : len(pieces)]
 	domain = strings.Join(domainarr, ".")
 	return domain, tld, nil
 }
@@ -113,6 +113,8 @@ func GetZone(domainHash [32]byte) (ipfsHash [32]byte, ipfsHash58 string, err err
 	if err != nil {
 		return ipfsHash, ipfsHash58, err
 	}
+	// 0xb63f160a960a1663c5cec1d7d02e67a44d368affd1d42be3b3554c34fd2dea4b
+	ipfsHash58 = BuildIPFSHash(uint8(18), res.Digest[:])
 	return res.Digest, ipfsHash58, nil
 }
 

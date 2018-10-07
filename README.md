@@ -36,7 +36,7 @@ The main idea is that core DNS zone data are kept in an Ethereum Smart Contract 
 
 Domain owners for new TLDs like `.hacker` will manage their DNS entries by:
  * [[txn #1](https://rinkeby.etherscan.io/tx/0xa17097bc57d65c2a1a2b3510cda36bf5390e07a9841adc756ba70078a9000730)] registering their domain with `registerDomain(string _domain)`,
- where a domain `eth.hacker` is represented on Ethereum with a domainHash like: `0x4f5b812789fc606be1b3b16908db13fc7a9adf7ca72641f84d75b47069d3d7f0`
+ where a domain `eth.hacker` is represented on Ethereum with a domainHash like: `0xb63f160a960a1663c5cec1d7d02e67a44d368affd1d42be3b3554c34fd2dea4b`
 
  * [[txn #2](https://rinkeby.etherscan.io/tx/0xc98b458d258268bb7409a55deafa4c3199976195d6562726c6b74e472b94bb28)] updating the zone record for the `domainHash` with `submitZone(bytes ipfsHashByte, bytes32 domainHash)`
 
@@ -66,14 +66,15 @@ can do local domain resolution:
 
 ```
 $ go test -run DNSRequest
-DNS3 Request:    dev.eth.hacker
-domain:          eth.hacker
-domainHash:      0x4f5b812789fc606be1b3b16908db13fc7a9adf7ca72641f84d75b47069d3d7f0
-DNS3.sol Call:   getZone(0x4f5b812789fc606be1b3b16908db13fc7a9adf7ca72641f84d75b47069d3d7f0)
-ipfsHash:        QmXThgG1gUnfywM4e9QpEYDkBZNJwSbpPogJjXtewVgYmi
-IPFS Lookup:     https://cloudflare-ipfs.com/ipfs/QmXThgG1gUnfywM4e9QpEYDkBZNJwSbpPogJjXtewVgYmi ... DONE
-DNS3 Result:     35.77.66.55
+DNS3 Request:	dev.eth.hacker
+  tld:	hacker
+  domain:	eth.hacker
+  domainHash:	0xb63f160a960a1663c5cec1d7d02e67a44d368affd1d42be3b3554c34fd2dea4b
+DNS3.sol Call:	getZone(0xb63f160a960a1663c5cec1d7d02e67a44d368affd1d42be3b3554c34fd2dea4b)
+  ipfsHash:	87879aa6968d1f21be72500bbeea130b1003efca205101364a77086b6abbb7d5 => QmXThgG1gUnfywM4e9QpEYDkBZNJwSbpPogJjXtewVgYmi  IPFS Lookup:	https://cloudflare-ipfs.com/ipfs/QmXThgG1gUnfywM4e9QpEYDkBZNJwSbpPogJjXtewVgYmi... FOUND
+  DNS3 Result:	35.77.66.55
 PASS
+ok  	github.com/wolkdb/dns3/dns3	1.013s
 ```
 Given a DNS3 Request of `dev.eth.hacker`, the above test computes the domain `eth.hacker`, calls `getZone(bytes32 domainHash)` with the Keccak hash of `eth.hacker` and gets back the latest zone file hash `QmXThgG1gUnfywM4e9QpEYDkBZNJwSbpPogJjXtewVgYmi`.  
 
