@@ -1,0 +1,5 @@
+;; eth.hacker zone entries
+;; A Records
+www.eth.hacker.     3600   IN  A   104.154.155.233
+ganache.eth.hacker. 1      IN  A   35.224.4.165
+remix.eth.hacker.   1      IN  A   52.4.38.70

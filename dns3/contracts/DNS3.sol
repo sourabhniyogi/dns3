@@ -121,6 +121,7 @@ contract DNS3 {
     }
 
 
+
     function getZone(bytes32 domainHash) public view returns (bytes32 digest, uint8 hashFunction,uint8 size) {
         require(OwnedDomain[domainHash] != 0, "Domain not registered");
         Multihash memory ipfsHash = ZoneHash["domainHash"];

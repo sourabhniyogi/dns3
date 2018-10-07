@@ -1,5 +1,0 @@
-;; wolk.com zone entries
-;; CNAME Records
-dns3.wolk.com.   3600    IN  A   104.154.155.233
-smt.wolk.com. 1   IN  A   35.224.4.165
-blog.wolk.com.  1   IN  A   52.4.38.70
