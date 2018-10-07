@@ -31,17 +31,15 @@ Recently, the lowest level (3) has been developed into a new blockchain protocol
 
 ### Part 1: DNS3.sol Ethereum Smart Contract
 
-The core idea is that core DNS zone data are kept in an Ethereum Smart Contract like `DNS3.sol`:
+The main idea is that core DNS zone data are kept in an Ethereum Smart Contract like `DNS3.sol` (View on [Rinkeby](https://rinkeby.etherscan.io/address/0x8c36f7e95f53b5ee7a35ec2dad854308877a0a94))
 
- https://rinkeby.etherscan.io/address/0x8c36f7e95f53b5ee7a35ec2dad854308877a0a94
 
 Domain owners for new TLDs like `.hacker` will manage their DNS entries by:
- * registering their domain with `registerDomain(string _domain)`
- https://rinkeby.etherscan.io/tx/0xa17097bc57d65c2a1a2b3510cda36bf5390e07a9841adc756ba70078a9000730
+ * [[txn #1](https://rinkeby.etherscan.io/tx/0xa17097bc57d65c2a1a2b3510cda36bf5390e07a9841adc756ba70078a9000730)] registering their domain with `registerDomain(string _domain)`,
  where a domain `eth.hacker` is represented on Ethereum with a domainHash like: `0x4f5b812789fc606be1b3b16908db13fc7a9adf7ca72641f84d75b47069d3d7f0`
 
- * updating the zone record for the `domainHash` with `submitZone(bytes ipfsHashByte, bytes32 domainHash)`
- https://rinkeby.etherscan.io/tx/0xc98b458d258268bb7409a55deafa4c3199976195d6562726c6b74e472b94bb28
+ * [[txn #2](https://rinkeby.etherscan.io/tx/0xc98b458d258268bb7409a55deafa4c3199976195d6562726c6b74e472b94bb28)] updating the zone record for the `domainHash` with `submitZone(bytes ipfsHashByte, bytes32 domainHash)`
+
 where the zone file hash `QmXThgG1gUnfywM4e9QpEYDkBZNJwSbpPogJjXtewVgYmi` is represented in a 34-byte `ipfsHashByte`: `0x122087879aa6968d1f21be72500bbeea130b1003efca205101364a77086b6abbb7d5`
 
 In this model, zone files are held in decentralized storage (IPFS), where a zone file is uniquely retrievable and verifiable by their zone _file hash_ such as this one:
@@ -69,10 +67,10 @@ can do local domain resolution:
 ```
 $ go test -run DNSRequest
 DNS3 Request:    dev.eth.hacker
-  domain:        eth.hacker
-  domainHash:    0x4f5b812789fc606be1b3b16908db13fc7a9adf7ca72641f84d75b47069d3d7f0
+domain:          eth.hacker
+domainHash:      0x4f5b812789fc606be1b3b16908db13fc7a9adf7ca72641f84d75b47069d3d7f0
 DNS3.sol Call:   getZone(0x4f5b812789fc606be1b3b16908db13fc7a9adf7ca72641f84d75b47069d3d7f0)
-  ipfsHash:      QmXThgG1gUnfywM4e9QpEYDkBZNJwSbpPogJjXtewVgYmi
+ipfsHash:        QmXThgG1gUnfywM4e9QpEYDkBZNJwSbpPogJjXtewVgYmi
 IPFS Lookup:     https://cloudflare-ipfs.com/ipfs/QmXThgG1gUnfywM4e9QpEYDkBZNJwSbpPogJjXtewVgYmi ... DONE
 DNS3 Result:     35.77.66.55
 PASS
@@ -85,7 +83,7 @@ When everyone runs local DNS Servers, we get _totally trustless DNS_!
 
 ### ... One more thing: Radical Markets
 
-We believe this trustless DNS3.0 approach can be adapted for new TLDs managed entirely with Handshake.  To reduce domain squatting (common to NameCoin, ENS, and the current Domain Name Registration system), we propose to adapt a "Radical Markets" technique proposed by Weyl and Posner in our DNS3.sol smart contract:
+We believe this trustless DNS3.0 approach can be adapted for new TLDs managed entirely with Handshake.  To reduce domain squatting (common to NameCoin, ENS, and the current Domain Name Registration system), we propose to adapt a "Radical Markets" technique proposed by Weyl and Posner to our DNS3.sol smart contract:
 * domain name registrants specify a _sale price_ when they register.  When they do so, they commit to paying a fixed percentage of that sale price every 1MM blocks.  Otherwise, anyone can pay that _sale price_ and secure the rights to the domain.  A grace period of 7 days is offered to ensure that a transition can be smooth, or for the current owner to increase his sale price to override the transfer, but the override cost must be at least 10x higher.      
 * Example: Alice purchases a new domain `dns3.hacker` for a price of .1 ETH but sets her _sale price_ to 10ETH.  Bob sees `dns3.hacker` and submits a `acquireDomain(bytes32 domainHash)` payable transaction for 10ETH to get it.   If Alice does nothing, after 7 days, Bob (or anyone) can finalize the purchase by calling `finalizeDomain(bytes32 domainHash)`, which transfers the funds to Alice.  If Alice pays 100ETH to keep the `dns3.hacker` domain, she (and only she) can call `challengePurchase(bytes32 domainHash)`
 This technique incentivizes domain owners to set their sale price to be within an order of magnitude of what they value it at.  If Alice rushes to buy 80,000 English word domains for .01 ETH each and sets a sale price of 10 ETH thinking she'll make killing, she must pay "taxes" based on the 1 ETH.  On the other hand, if some old company comes by and wishes to pay 10 ETH for it, they may do so, but Alice does not benefit massively for having sat on it.
