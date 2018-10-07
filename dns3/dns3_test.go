@@ -45,22 +45,27 @@ func TestDNSRequest(t *testing.T) {
 
 	// 3. Lookup DNS in IPFS Url
 	fmt.Printf("  IPFS Lookup:\t%s", ipfsUrl)
-	result, err := LookupDNS(ipfsUrl, request)
+	result, found, err := LookupDNS(ipfsUrl, request)
 	if err != nil {
 		t.Fatalf("LookupDNS Err: %v", err)
 	}
-	fmt.Printf("... DONE\n")
-	fmt.Printf("  DNS3 Result:\t%s\n", result)
-	if strings.Compare(result, expectedResponse) != 0 {
-		t.Fatalf("Failure to get expected response %s", expectedResponse)
+	if found {
+		fmt.Printf("... FOUND\n")
+		fmt.Printf("  DNS3 Result:\t%s\n", result)
+		if strings.Compare(result, expectedResponse) != 0 {
+			t.Fatalf("Failure to get expected response %s", expectedResponse)
+		}
+	} else {
+		t.Fatalf("... NOT FOUND\n")
 	}
 }
 
 /*
-[root@www6001 dns3]# ipfs add eth.hacker.txt
-added QmXThgG1gUnfywM4e9QpEYDkBZNJwSbpPogJjXtewVgYmi eth.hacker.txt
-[root@www6001 dns3]# ipfs add eth.hacker.txt-new
-added QmNRKcZ373xthrC3uTLw6wmo1MNM3RE8mTVGs9FFec7GL9 eth.hacker.txt-new
+Tests IPFS IPFSHashToBytes, BuildIPFSHash
+# ipfs add eth.hacker.txt
+added QmXThgG1gUnfywM4e9QpEYDkBZNJwSbpPogJjXtewVgYmi eth.hacker.txt-new
+# ipfs add eth.hacker.txt-new
+added QmNRKcZ373xthrC3uTLw6wmo1MNM3RE8mTVGs9FFec7GL9 eth.hacker.txt
 */
 func TestIPFS(t *testing.T) {
 	// Added with "ipfs add eth.hacker.txt-new"
@@ -85,18 +90,22 @@ func TestIPFS(t *testing.T) {
 	ipfsUrl := fmt.Sprintf("https://cloudflare-ipfs.com/ipfs/%s", ipfsHash58b)
 	fmt.Printf("HashType: %d Digest: %x IPFS Hash: %s Url: %s\n", hashtype, digest, ipfsHash58b, ipfsUrl)
 
-	// 3. Lookup DNS in IPFS Url
+	// Lookup DNS in IPFS Url
 	request := "dev.eth.hacker"
-	result, err := LookupDNS(ipfsUrl, request)
+	result, found, err := LookupDNS(ipfsUrl, request)
 	if err != nil {
 		t.Fatalf("LookupDNS Err: %v", err)
 	}
-	fmt.Printf("... DONE\n")
-	fmt.Printf("  DNS3 Result:\t%s\n", result)
+	if found {
+		fmt.Printf("   DNS3 Result:\t%s\n", result)
+	} else {
+		t.Fatalf("  DNS3 Result NOT FOUND")
+	}
 }
 
-// Tests Submit Zone in Go
+// Tests SubmitZone in Go
 func TestSubmitZone(t *testing.T) {
+	t.SkipNow()
 	key, _ := crypto.HexToECDSA(PrivateKey)
 	session, err := setSession(common.HexToAddress(DNS3ContractAddr), wsEndpointUrl, key)
 	if err != nil {
@@ -124,6 +133,7 @@ func TestSubmitZone(t *testing.T) {
 	fmt.Printf("tx: %x\n", tx.Hash())
 }
 
+// Sample DNS server ( used in TestLocalDNS below )
 func AnotherHelloServer(w dns.ResponseWriter, req *dns.Msg) {
 	m := new(dns.Msg)
 	m.SetReply(req)
@@ -133,7 +143,7 @@ func AnotherHelloServer(w dns.ResponseWriter, req *dns.Msg) {
 	w.WriteMsg(m)
 }
 
-// Demonstrates local DNS Server idea
+// Demonstrates local DNS Server independent of Ethereum Contract GetZone call
 func TestLocal(t *testing.T) {
 	dns.HandleFunc("eth.hacker.", AnotherHelloServer)
 	defer dns.HandleRemove("eth.hacker.")
@@ -158,6 +168,5 @@ func TestLocal(t *testing.T) {
 	if txt != "104.154.155.233" {
 		t.Error("unexpected result for eth.hacker", txt, "!= 104.154.155.233")
 	}
-	fmt.Printf("%v\n", txt)
 	server.Shutdown()
 }
