@@ -3,6 +3,7 @@ package dns3
 import (
 	"crypto/ecdsa"
 	"fmt"
+	"strings"
 
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
@@ -54,8 +55,21 @@ func setSession(contractAddr common.Address, endpointUrl string, key *ecdsa.Priv
 	return session, nil
 }
 
+func DomainHash(domain string) (domainHash [32]byte) {
+	domainHash0 := Keccak256([]byte(domain))
+	copy(domainHash[0:32], domainHash0[0:32])
+	return domainHash
+}
+
 func ParseDomain(request string) (domain string, tld string, err error) {
 	// [Sourabh] TODO: parse "dev.eth.hacker" into "eth.hacker"
+	pieces := strings.Split(request, ".")
+	if len(pieces) < 2 {
+		return domain, tld, fmt.Errorf("Invalid domain")
+	}
+	tld = pieces[len(pieces)-1]
+	domainarr := pieces[len(pieces)-2 : len(pieces)-1]
+	domain = strings.Join(domainarr, ".")
 	return domain, tld, nil
 }
 

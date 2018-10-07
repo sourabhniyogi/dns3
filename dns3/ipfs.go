@@ -6,7 +6,7 @@ import (
 	"os/exec"
 
 	"github.com/btcsuite/btcutil/base58"
-	"github.com/wolkdb/go-ethereum/crypto/sha3"
+	"github.com/ethereum/go-ethereum/crypto/sha3"
 )
 
 func Keccak256(data ...[]byte) []byte {
@@ -19,7 +19,7 @@ func Keccak256(data ...[]byte) []byte {
 
 func IPFSHashToBytes(h string) (hashtype uint8, digest []byte, err error) {
 	ipfs := base58.Decode(h)
-	// 12 20 8bd215d69eef287f6cc093501672d6b1f8c908bf5adedc47993d5676e39577b6
+
 	hashtype = ipfs[0]
 	sz := int(ipfs[1])
 	digest = ipfs[2:]
@@ -27,6 +27,14 @@ func IPFSHashToBytes(h string) (hashtype uint8, digest []byte, err error) {
 		return hashtype, digest, fmt.Errorf("incorrect size")
 	}
 	return hashtype, digest, nil
+}
+
+func BuildIPFSHash(hashtype uint8, digest []byte) (ipfshash58 string) {
+	prefix := make([]byte, 2)
+	prefix[0] = hashtype
+	prefix[1] = byte(len(digest))
+	b := append(prefix, digest...)
+	return base58.Encode(b)
 }
 
 func submitZone(fn string) {

@@ -1,6 +1,7 @@
 package dns3
 
 import (
+	"bytes"
 	"encoding/hex"
 	"fmt"
 	"strings"
@@ -30,13 +31,11 @@ func TestDNSRequest(t *testing.T) {
 	fmt.Printf("DNS3 Request:\t%s\n", request)
 	fmt.Printf("  tld:\t%s\n", tld) // TODO Integrate with Handshake
 	fmt.Printf("  domain:\t%s\n", domain)
-	domainHash := Keccak256([]byte(domain))
-	var domainHash32 [32]byte
-	copy(domainHash32[:], domainHash[:])
+	domainHash := DomainHash(domain)
 	fmt.Printf("  domainHash:\t0x%x\n", domainHash)
 
 	// 2. Get the Zone File Hash from Ethereum, turn it into a URL
-	ipfsHash, ipfsHash58, err := GetZone(domainHash32)
+	ipfsHash, ipfsHash58, err := GetZone(domainHash)
 	if err != nil {
 		t.Fatalf("GetZone Err: %v", err)
 	}
@@ -55,6 +54,45 @@ func TestDNSRequest(t *testing.T) {
 	if strings.Compare(result, expectedResponse) != 0 {
 		t.Fatalf("Failure to get expected response %s", expectedResponse)
 	}
+}
+
+/*
+[root@www6001 dns3]# ipfs add eth.hacker.txt
+added QmXThgG1gUnfywM4e9QpEYDkBZNJwSbpPogJjXtewVgYmi eth.hacker.txt
+[root@www6001 dns3]# ipfs add eth.hacker.txt-new
+added QmNRKcZ373xthrC3uTLw6wmo1MNM3RE8mTVGs9FFec7GL9 eth.hacker.txt-new
+*/
+func TestIPFS(t *testing.T) {
+	// Added with "ipfs add eth.hacker.txt-new"
+	ipfsHash58 := "QmXThgG1gUnfywM4e9QpEYDkBZNJwSbpPogJjXtewVgYmi"
+	// 122087879aa6968d1f21be72500bbeea130b1003efca205101364a77086b6abbb7d5
+	expected_hashtype := byte(18)
+	expected_digest, _ := hex.DecodeString("87879aa6968d1f21be72500bbeea130b1003efca205101364a77086b6abbb7d5")
+	hashtype, digest, err := IPFSHashToBytes(ipfsHash58)
+	if err != nil {
+		t.Fatalf("IPFSHashToBytes Error %v", err)
+	}
+	if bytes.Compare(digest, expected_digest) != 0 {
+		t.Fatalf("Failure to get expected digest %x", expected_digest)
+	}
+	if hashtype != expected_hashtype {
+		t.Fatalf("Failure to get expected hashtype %d", expected_hashtype)
+	}
+	ipfsHash58b := BuildIPFSHash(hashtype, digest)
+	if strings.Compare(ipfsHash58, ipfsHash58b) != 0 {
+		t.Fatalf("Failure to get build correct IPFS Hash %s (incorrectly built %s)", ipfsHash58, ipfsHash58b)
+	}
+	ipfsUrl := fmt.Sprintf("https://cloudflare-ipfs.com/ipfs/%s", ipfsHash58b)
+	fmt.Printf("HashType: %d Digest: %x IPFS Hash: %s Url: %s\n", hashtype, digest, ipfsHash58b, ipfsUrl)
+
+	// 3. Lookup DNS in IPFS Url
+	request := "dev.eth.hacker"
+	result, err := LookupDNS(ipfsUrl, request)
+	if err != nil {
+		t.Fatalf("LookupDNS Err: %v", err)
+	}
+	fmt.Printf("... DONE\n")
+	fmt.Printf("  DNS3 Result:\t%s\n", result)
 }
 
 // Tests Submit Zone in Go
@@ -76,10 +114,7 @@ func TestSubmitZone(t *testing.T) {
 	copy(ipfsdigest[:], digest[:])
 	sz := len(digest)
 	domain := "eth.hacker"
-	domainHash0 := Keccak256([]byte(domain))
-	var domainHash [32]byte
-	copy(domainHash[0:32], domainHash0[0:32])
-	domainHash0, _ = hex.DecodeString("b63f160a960a1663c5cec1d7d02e67a44d368affd1d42be3b3554c34fd2dea4b")
+	domainHash := DomainHash(domain)
 
 	// SubmitZone
 	tx, err := session.SubmitZone(ipfsdigest, hashtype, uint8(sz), domainHash)
