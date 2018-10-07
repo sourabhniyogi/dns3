@@ -1,13 +1,12 @@
 // Code generated - DO NOT EDIT.
 // This file is a generated binding and any manual changes will be lost.
-
 package dns3
 
 import (
 	"math/big"
 	"strings"
 
-	ethereum "github.com/ethereum/go-ethereum"
+	"github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
@@ -16,7 +15,7 @@ import (
 )
 
 // DNS3ABI is the input ABI used to generate the binding from.
-const DNS3ABI = "[{\"constant\":true,\"inputs\":[{\"name\":\"\",\"type\":\"bytes32\"}],\"name\":\"Buyer\",\"outputs\":[{\"name\":\"\",\"type\":\"address\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"\",\"type\":\"bytes32\"}],\"name\":\"OwnedDomain\",\"outputs\":[{\"name\":\"\",\"type\":\"address\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"ipfsHashByte\",\"type\":\"bytes\"},{\"name\":\"domainHash\",\"type\":\"bytes32\"}],\"name\":\"submitZone\",\"outputs\":[{\"name\":\"\",\"type\":\"bool\"}],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"domainHash\",\"type\":\"bytes32\"}],\"name\":\"getZone\",\"outputs\":[{\"name\":\"digest\",\"type\":\"bytes32\"},{\"name\":\"hashFunction\",\"type\":\"uint8\"},{\"name\":\"size\",\"type\":\"uint8\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"domainHash\",\"type\":\"bytes32\"},{\"name\":\"_canBuy\",\"type\":\"address\"}],\"name\":\"approvedBuyer\",\"outputs\":[{\"name\":\"\",\"type\":\"bool\"}],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"domainHash\",\"type\":\"bytes32\"}],\"name\":\"cancelBuyer\",\"outputs\":[{\"name\":\"\",\"type\":\"bool\"}],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"currentBlkNum\",\"outputs\":[{\"name\":\"\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"domainHash\",\"type\":\"bytes32\"}],\"name\":\"acquireDomain\",\"outputs\":[{\"name\":\"\",\"type\":\"bool\"}],\"payable\":true,\"stateMutability\":\"payable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"domainHash\",\"type\":\"bytes32\"}],\"name\":\"releaseDomain\",\"outputs\":[{\"name\":\"\",\"type\":\"bool\"}],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"_domain\",\"type\":\"string\"}],\"name\":\"registerDomain\",\"outputs\":[{\"name\":\"\",\"type\":\"bool\"}],\"payable\":true,\"stateMutability\":\"payable\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"PublishedDomains\",\"outputs\":[{\"name\":\"digest\",\"type\":\"bytes32\"},{\"name\":\"hashFunction\",\"type\":\"uint8\"},{\"name\":\"size\",\"type\":\"uint8\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"\",\"type\":\"bytes32\"}],\"name\":\"DomainName\",\"outputs\":[{\"name\":\"\",\"type\":\"string\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"\",\"type\":\"bytes32\"}],\"name\":\"ZoneHash\",\"outputs\":[{\"name\":\"digest\",\"type\":\"bytes32\"},{\"name\":\"hashFunction\",\"type\":\"uint8\"},{\"name\":\"size\",\"type\":\"uint8\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"authority\",\"outputs\":[{\"name\":\"\",\"type\":\"address\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"ipfsHashByte\",\"type\":\"bytes\"},{\"name\":\"blkNum\",\"type\":\"uint256\"}],\"name\":\"updateDomains\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"name\":\"Domain\",\"type\":\"string\"},{\"indexed\":true,\"name\":\"DomainHash\",\"type\":\"bytes32\"},{\"indexed\":true,\"name\":\"Owner\",\"type\":\"address\"},{\"indexed\":false,\"name\":\"Deposit\",\"type\":\"uint256\"}],\"name\":\"DomainClaim\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"name\":\"DomainHash\",\"type\":\"bytes32\"},{\"indexed\":true,\"name\":\"originalOwner\",\"type\":\"address\"},{\"indexed\":true,\"name\":\"newOwner\",\"type\":\"address\"},{\"indexed\":false,\"name\":\"newDeposit\",\"type\":\"uint256\"}],\"name\":\"DomainTransfer\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"name\":\"DomainHash\",\"type\":\"bytes32\"},{\"indexed\":true,\"name\":\"Owner\",\"type\":\"address\"},{\"indexed\":false,\"name\":\"halfRefund\",\"type\":\"uint256\"}],\"name\":\"DomainRelease\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"name\":\"blkNum\",\"type\":\"uint256\"},{\"indexed\":false,\"name\":\"digest\",\"type\":\"bytes32\"},{\"indexed\":false,\"name\":\"hashFunction\",\"type\":\"uint8\"},{\"indexed\":false,\"name\":\"size\",\"type\":\"uint8\"}],\"name\":\"DomainsUpdate\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"name\":\"DomainHash\",\"type\":\"bytes32\"},{\"indexed\":false,\"name\":\"digest\",\"type\":\"bytes32\"},{\"indexed\":false,\"name\":\"hashFunction\",\"type\":\"uint8\"},{\"indexed\":false,\"name\":\"size\",\"type\":\"uint8\"}],\"name\":\"ZoneUpdate\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"name\":\"DomainHash\",\"type\":\"bytes32\"},{\"indexed\":true,\"name\":\"approvedBuyer\",\"type\":\"address\"}],\"name\":\"ApprovedBuyer\",\"type\":\"event\"}]"
+const DNS3ABI = "[{\"constant\":true,\"inputs\":[{\"name\":\"\",\"type\":\"bytes32\"}],\"name\":\"Buyer\",\"outputs\":[{\"name\":\"\",\"type\":\"address\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"\",\"type\":\"bytes32\"}],\"name\":\"OwnedDomain\",\"outputs\":[{\"name\":\"\",\"type\":\"address\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"domainHash\",\"type\":\"bytes32\"}],\"name\":\"getZone\",\"outputs\":[{\"name\":\"digest\",\"type\":\"bytes32\"},{\"name\":\"hashFunction\",\"type\":\"uint8\"},{\"name\":\"size\",\"type\":\"uint8\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"domainHash\",\"type\":\"bytes32\"},{\"name\":\"_canBuy\",\"type\":\"address\"}],\"name\":\"approvedBuyer\",\"outputs\":[{\"name\":\"\",\"type\":\"bool\"}],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"domainHash\",\"type\":\"bytes32\"}],\"name\":\"cancelBuyer\",\"outputs\":[{\"name\":\"\",\"type\":\"bool\"}],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"currentBlkNum\",\"outputs\":[{\"name\":\"\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"domainHash\",\"type\":\"bytes32\"}],\"name\":\"acquireDomain\",\"outputs\":[{\"name\":\"\",\"type\":\"bool\"}],\"payable\":true,\"stateMutability\":\"payable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"domainHash\",\"type\":\"bytes32\"}],\"name\":\"releaseDomain\",\"outputs\":[{\"name\":\"\",\"type\":\"bool\"}],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"_domain\",\"type\":\"string\"}],\"name\":\"registerDomain\",\"outputs\":[{\"name\":\"\",\"type\":\"bool\"}],\"payable\":true,\"stateMutability\":\"payable\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"PublishedDomains\",\"outputs\":[{\"name\":\"digest\",\"type\":\"bytes32\"},{\"name\":\"hashFunction\",\"type\":\"uint8\"},{\"name\":\"size\",\"type\":\"uint8\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"\",\"type\":\"bytes32\"}],\"name\":\"DomainName\",\"outputs\":[{\"name\":\"\",\"type\":\"string\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"\",\"type\":\"bytes32\"}],\"name\":\"ZoneHash\",\"outputs\":[{\"name\":\"digest\",\"type\":\"bytes32\"},{\"name\":\"hashFunction\",\"type\":\"uint8\"},{\"name\":\"size\",\"type\":\"uint8\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"digest\",\"type\":\"bytes32\"},{\"name\":\"hashFunction\",\"type\":\"uint8\"},{\"name\":\"size\",\"type\":\"uint8\"},{\"name\":\"blkNum\",\"type\":\"uint256\"}],\"name\":\"updateDomains\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"authority\",\"outputs\":[{\"name\":\"\",\"type\":\"address\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"digest\",\"type\":\"bytes32\"},{\"name\":\"hashFunction\",\"type\":\"uint8\"},{\"name\":\"size\",\"type\":\"uint8\"},{\"name\":\"domainHash\",\"type\":\"bytes32\"}],\"name\":\"submitZone\",\"outputs\":[{\"name\":\"\",\"type\":\"bool\"}],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"name\":\"Domain\",\"type\":\"string\"},{\"indexed\":true,\"name\":\"DomainHash\",\"type\":\"bytes32\"},{\"indexed\":true,\"name\":\"Owner\",\"type\":\"address\"},{\"indexed\":false,\"name\":\"Deposit\",\"type\":\"uint256\"}],\"name\":\"DomainClaim\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"name\":\"DomainHash\",\"type\":\"bytes32\"},{\"indexed\":true,\"name\":\"originalOwner\",\"type\":\"address\"},{\"indexed\":true,\"name\":\"newOwner\",\"type\":\"address\"},{\"indexed\":false,\"name\":\"newDeposit\",\"type\":\"uint256\"}],\"name\":\"DomainTransfer\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"name\":\"DomainHash\",\"type\":\"bytes32\"},{\"indexed\":true,\"name\":\"Owner\",\"type\":\"address\"},{\"indexed\":false,\"name\":\"halfRefund\",\"type\":\"uint256\"}],\"name\":\"DomainRelease\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"name\":\"blkNum\",\"type\":\"uint256\"},{\"indexed\":false,\"name\":\"digest\",\"type\":\"bytes32\"},{\"indexed\":false,\"name\":\"hashFunction\",\"type\":\"uint8\"},{\"indexed\":false,\"name\":\"size\",\"type\":\"uint8\"}],\"name\":\"DomainsUpdate\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"name\":\"DomainHash\",\"type\":\"bytes32\"},{\"indexed\":false,\"name\":\"digest\",\"type\":\"bytes32\"},{\"indexed\":false,\"name\":\"hashFunction\",\"type\":\"uint8\"},{\"indexed\":false,\"name\":\"size\",\"type\":\"uint8\"}],\"name\":\"ZoneUpdate\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"name\":\"DomainHash\",\"type\":\"bytes32\"},{\"indexed\":true,\"name\":\"approvedBuyer\",\"type\":\"address\"}],\"name\":\"ApprovedBuyer\",\"type\":\"event\"}]"
 
 // DNS3 is an auto generated Go binding around an Ethereum contract.
 type DNS3 struct {
@@ -515,46 +514,46 @@ func (_DNS3 *DNS3TransactorSession) ReleaseDomain(domainHash [32]byte) (*types.T
 	return _DNS3.Contract.ReleaseDomain(&_DNS3.TransactOpts, domainHash)
 }
 
-// SubmitZone is a paid mutator transaction binding the contract method 0x404f1827.
+// SubmitZone is a paid mutator transaction binding the contract method 0xc6b2199b.
 //
-// Solidity: function submitZone(ipfsHashByte bytes, domainHash bytes32) returns(bool)
-func (_DNS3 *DNS3Transactor) SubmitZone(opts *bind.TransactOpts, ipfsHashByte []byte, domainHash [32]byte) (*types.Transaction, error) {
-	return _DNS3.contract.Transact(opts, "submitZone", ipfsHashByte, domainHash)
+// Solidity: function submitZone(digest bytes32, hashFunction uint8, size uint8, domainHash bytes32) returns(bool)
+func (_DNS3 *DNS3Transactor) SubmitZone(opts *bind.TransactOpts, digest [32]byte, hashFunction uint8, size uint8, domainHash [32]byte) (*types.Transaction, error) {
+	return _DNS3.contract.Transact(opts, "submitZone", digest, hashFunction, size, domainHash)
 }
 
-// SubmitZone is a paid mutator transaction binding the contract method 0x404f1827.
+// SubmitZone is a paid mutator transaction binding the contract method 0xc6b2199b.
 //
-// Solidity: function submitZone(ipfsHashByte bytes, domainHash bytes32) returns(bool)
-func (_DNS3 *DNS3Session) SubmitZone(ipfsHashByte []byte, domainHash [32]byte) (*types.Transaction, error) {
-	return _DNS3.Contract.SubmitZone(&_DNS3.TransactOpts, ipfsHashByte, domainHash)
+// Solidity: function submitZone(digest bytes32, hashFunction uint8, size uint8, domainHash bytes32) returns(bool)
+func (_DNS3 *DNS3Session) SubmitZone(digest [32]byte, hashFunction uint8, size uint8, domainHash [32]byte) (*types.Transaction, error) {
+	return _DNS3.Contract.SubmitZone(&_DNS3.TransactOpts, digest, hashFunction, size, domainHash)
 }
 
-// SubmitZone is a paid mutator transaction binding the contract method 0x404f1827.
+// SubmitZone is a paid mutator transaction binding the contract method 0xc6b2199b.
 //
-// Solidity: function submitZone(ipfsHashByte bytes, domainHash bytes32) returns(bool)
-func (_DNS3 *DNS3TransactorSession) SubmitZone(ipfsHashByte []byte, domainHash [32]byte) (*types.Transaction, error) {
-	return _DNS3.Contract.SubmitZone(&_DNS3.TransactOpts, ipfsHashByte, domainHash)
+// Solidity: function submitZone(digest bytes32, hashFunction uint8, size uint8, domainHash bytes32) returns(bool)
+func (_DNS3 *DNS3TransactorSession) SubmitZone(digest [32]byte, hashFunction uint8, size uint8, domainHash [32]byte) (*types.Transaction, error) {
+	return _DNS3.Contract.SubmitZone(&_DNS3.TransactOpts, digest, hashFunction, size, domainHash)
 }
 
-// UpdateDomains is a paid mutator transaction binding the contract method 0xdac7f301.
+// UpdateDomains is a paid mutator transaction binding the contract method 0xb25037f2.
 //
-// Solidity: function updateDomains(ipfsHashByte bytes, blkNum uint256) returns()
-func (_DNS3 *DNS3Transactor) UpdateDomains(opts *bind.TransactOpts, ipfsHashByte []byte, blkNum *big.Int) (*types.Transaction, error) {
-	return _DNS3.contract.Transact(opts, "updateDomains", ipfsHashByte, blkNum)
+// Solidity: function updateDomains(digest bytes32, hashFunction uint8, size uint8, blkNum uint256) returns()
+func (_DNS3 *DNS3Transactor) UpdateDomains(opts *bind.TransactOpts, digest [32]byte, hashFunction uint8, size uint8, blkNum *big.Int) (*types.Transaction, error) {
+	return _DNS3.contract.Transact(opts, "updateDomains", digest, hashFunction, size, blkNum)
 }
 
-// UpdateDomains is a paid mutator transaction binding the contract method 0xdac7f301.
+// UpdateDomains is a paid mutator transaction binding the contract method 0xb25037f2.
 //
-// Solidity: function updateDomains(ipfsHashByte bytes, blkNum uint256) returns()
-func (_DNS3 *DNS3Session) UpdateDomains(ipfsHashByte []byte, blkNum *big.Int) (*types.Transaction, error) {
-	return _DNS3.Contract.UpdateDomains(&_DNS3.TransactOpts, ipfsHashByte, blkNum)
+// Solidity: function updateDomains(digest bytes32, hashFunction uint8, size uint8, blkNum uint256) returns()
+func (_DNS3 *DNS3Session) UpdateDomains(digest [32]byte, hashFunction uint8, size uint8, blkNum *big.Int) (*types.Transaction, error) {
+	return _DNS3.Contract.UpdateDomains(&_DNS3.TransactOpts, digest, hashFunction, size, blkNum)
 }
 
-// UpdateDomains is a paid mutator transaction binding the contract method 0xdac7f301.
+// UpdateDomains is a paid mutator transaction binding the contract method 0xb25037f2.
 //
-// Solidity: function updateDomains(ipfsHashByte bytes, blkNum uint256) returns()
-func (_DNS3 *DNS3TransactorSession) UpdateDomains(ipfsHashByte []byte, blkNum *big.Int) (*types.Transaction, error) {
-	return _DNS3.Contract.UpdateDomains(&_DNS3.TransactOpts, ipfsHashByte, blkNum)
+// Solidity: function updateDomains(digest bytes32, hashFunction uint8, size uint8, blkNum uint256) returns()
+func (_DNS3 *DNS3TransactorSession) UpdateDomains(digest [32]byte, hashFunction uint8, size uint8, blkNum *big.Int) (*types.Transaction, error) {
+	return _DNS3.Contract.UpdateDomains(&_DNS3.TransactOpts, digest, hashFunction, size, blkNum)
 }
 
 // DNS3ApprovedBuyerIterator is returned from FilterApprovedBuyer and is used to iterate over the raw logs and unpacked data for ApprovedBuyer events raised by the DNS3 contract.
