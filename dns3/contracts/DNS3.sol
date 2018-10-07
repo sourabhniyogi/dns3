@@ -23,18 +23,19 @@
 
 import "./SafeMath.sol";
 pragma solidity ^0.4.25;
+
 contract DNS3 {
     event DomainClaim(string Domain, bytes32 indexed DomainHash, address indexed Owner, uint256 Deposit);
     event DomainTransfer(bytes32 indexed DomainHash, address indexed originalOwner, address indexed newOwner, uint256 newDeposit);
     event DomainRelease(bytes32 indexed DomainHash, address indexed Owner, uint256 halfRefund);
-    event DomainsUpdate(uint256 indexed blkNum, bytes32 digest, uint8 hashFunction,uint8 size);
-    event ZoneUpdate(bytes32 indexed DomainHash, bytes32 digest, uint8 hashFunction,uint8 size);
+    event DomainsUpdate(uint256 indexed blkNum, uint8 hashFunction,uint8 size, bytes32 digest);
+    event ZoneUpdate(bytes32 indexed DomainHash, uint8 hashFunction,uint8 size, bytes32 digest);
     event ApprovedBuyer(bytes32 indexed DomainHash, address indexed approvedBuyer);
 
     struct Multihash {
-        bytes32 digest;
         uint8 hashFunction;
         uint8 size;
+        bytes32 digest;
     }
 
     using SafeMath for uint256;
@@ -115,11 +116,9 @@ contract DNS3 {
         require(OwnedDomain[domainHash] == msg.sender, 'Unauthorized zoneUpdate');
         Multihash memory ipfsHash = _setMultihash(ipfsHashByte);
         ZoneHash["domainHash"] = ipfsHash;
-        emit ZoneUpdate(domainHash, ipfsHash.digest, ipfsHash.hashFunction, ipfsHash.size);
+        emit ZoneUpdate(domainHash, ipfsHash.hashFunction, ipfsHash.size, ipfsHash.digest);
         return true;
-
     }
-
 
 
     function getZone(bytes32 domainHash) public view returns (bytes32 digest, uint8 hashFunction,uint8 size) {
@@ -131,28 +130,18 @@ contract DNS3 {
     function updateDomains(bytes ipfsHashByte, uint256 blkNum) public isAuthority {
          //require(PublishedDomain[blkNum] != 0, "Multihash already set");
          //require(currentBlkNum.add(1) != PublishedDomain[blkNum], "Multihash already set");
-         uint16 hashPart;
-         bytes32 digest;
-         assembly {
-             hashPart := div(mload(add(ipfsHashByte, 32)), exp(256, 30))
-             digest := mload(add(ipfsHashByte, 2))
-         }
          Multihash memory ipfsHash = _setMultihash(ipfsHashByte);
          PublishedDomains[blkNum] = ipfsHash;
-         emit DomainsUpdate(blkNum, ipfsHash.digest, ipfsHash.hashFunction, ipfsHash.size);
+         emit DomainsUpdate(blkNum, ipfsHash.hashFunction, ipfsHash.size, ipfsHash.digest);
     }
 
     function _setMultihash(bytes ipfsHashByte) private pure returns (Multihash memory) {
-        uint16 hashPart;
         bytes32 digest;
-        assembly {
-             hashPart := div(mload(add(ipfsHashByte, 32)), exp(256, 30))
-             digest := mload(add(ipfsHashByte, 2))
-        }
+        assembly { digest := mload(add(ipfsHashByte,34)) }
         Multihash memory ipfsHash;
+        ipfsHash.hashFunction = uint8(ipfsHashByte[0]);
+        ipfsHash.size = uint8(ipfsHashByte[1]);
         ipfsHash.digest = digest;
-        ipfsHash.hashFunction = uint8(hashPart / 256);
-        ipfsHash.size = uint8(hashPart % 256);
         return ipfsHash;
     }
 }

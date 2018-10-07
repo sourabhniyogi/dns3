@@ -29,6 +29,15 @@ func IPFSHashToBytes(h string) (hashtype uint8, digest []byte, err error) {
 	return hashtype, digest, nil
 }
 
+func IPFSHashTo34Bytes(h string) (ipfsHashByte []byte, err error) {
+	ipfs := base58.Decode(h)
+	if len(ipfs[2:]) != int(ipfs[1]) {
+		return ipfsHashByte, fmt.Errorf("incorrect size")
+	}
+
+	return ipfs, nil
+}
+
 func BuildIPFSHash(hashtype uint8, digest []byte) (ipfshash58 string) {
 	prefix := make([]byte, 2)
 	prefix[0] = hashtype

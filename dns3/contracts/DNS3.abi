@@ -211,16 +211,16 @@
         "name": "PublishedDomains",
         "outputs": [
             {
-                "name": "digest",
-                "type": "bytes32"
-            },
-            {
                 "name": "hashFunction",
                 "type": "uint8"
             },
             {
                 "name": "size",
                 "type": "uint8"
+            },
+            {
+                "name": "digest",
+                "type": "bytes32"
             }
         ],
         "payable": false,
@@ -257,16 +257,16 @@
         "name": "ZoneHash",
         "outputs": [
             {
-                "name": "digest",
-                "type": "bytes32"
-            },
-            {
                 "name": "hashFunction",
                 "type": "uint8"
             },
             {
                 "name": "size",
                 "type": "uint8"
+            },
+            {
+                "name": "digest",
+                "type": "bytes32"
             }
         ],
         "payable": false,
@@ -397,11 +397,6 @@
             },
             {
                 "indexed": false,
-                "name": "digest",
-                "type": "bytes32"
-            },
-            {
-                "indexed": false,
                 "name": "hashFunction",
                 "type": "uint8"
             },
@@ -409,6 +404,11 @@
                 "indexed": false,
                 "name": "size",
                 "type": "uint8"
+            },
+            {
+                "indexed": false,
+                "name": "digest",
+                "type": "bytes32"
             }
         ],
         "name": "DomainsUpdate",
@@ -424,11 +424,6 @@
             },
             {
                 "indexed": false,
-                "name": "digest",
-                "type": "bytes32"
-            },
-            {
-                "indexed": false,
                 "name": "hashFunction",
                 "type": "uint8"
             },
@@ -436,6 +431,11 @@
                 "indexed": false,
                 "name": "size",
                 "type": "uint8"
+            },
+            {
+                "indexed": false,
+                "name": "digest",
+                "type": "bytes32"
             }
         ],
         "name": "ZoneUpdate",

@@ -114,19 +114,15 @@ func TestSubmitZone(t *testing.T) {
 
 	// sample data
 	sample := "QmXkTBPtuJ1pTYRQ1U4AsSgAy1vE7r1EaMSAJ4pKMkZj89"
-	//	ipfs := base58.Decode(sample)
-	hashtype, digest, err := IPFSHashToBytes(sample)
+	ipfsHashByte, err := IPFSHashTo34Bytes(sample)
 	if err != nil {
 		t.Fatalf("IPFSHash %v\n", err)
 	}
-	var ipfsdigest [32]byte
-	copy(ipfsdigest[:], digest[:])
-	sz := len(digest)
 	domain := "eth.hacker"
 	domainHash := DomainHash(domain)
 
 	// SubmitZone
-	tx, err := session.SubmitZone(ipfsdigest, hashtype, uint8(sz), domainHash)
+	tx, err := session.SubmitZone(ipfsHashByte, domainHash)
 	if err != nil {
 		t.Fatalf("submitZone %v", err)
 	}

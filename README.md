@@ -33,7 +33,7 @@ Recently, the lowest level (3) has been developed into a new blockchain protocol
 
 The core idea is that core DNS zone data are kept in an Ethereum Smart Contract like `DNS3.sol`:
 
- https://rinkeby.etherscan.io/address/0x8116a77cf44457a455ffc24001c521ddeebc9606
+ https://rinkeby.etherscan.io/address/0x8c36f7e95f53b5ee7a35ec2dad854308877a0a94
 
 Domain owners for new TLDs like `.hacker` will manage their DNS entries by:
  * registering their domain with `registerDomain(string _domain)`
@@ -41,8 +41,8 @@ Domain owners for new TLDs like `.hacker` will manage their DNS entries by:
  where a domain `eth.hacker` is represented on Ethereum with a domainHash like: `0x4f5b812789fc606be1b3b16908db13fc7a9adf7ca72641f84d75b47069d3d7f0`
 
  * updating the zone record for the `domainHash` with `submitZone(bytes ipfsHashByte, bytes32 domainHash)`
- https://rinkeby.etherscan.io/tx/0x4d5eb503fb3fe8006728724fe94242b142285fb1971c6d7362749a9f3d8262eb
-where the zone file hash `QmXThgG1gUnfywM4e9QpEYDkBZNJwSbpPogJjXtewVgYmi` is represented in a 34-byte `ipfsHashByte`
+ https://rinkeby.etherscan.io/tx/0xc98b458d258268bb7409a55deafa4c3199976195d6562726c6b74e472b94bb28
+where the zone file hash `QmXThgG1gUnfywM4e9QpEYDkBZNJwSbpPogJjXtewVgYmi` is represented in a 34-byte `ipfsHashByte`: `0x122087879aa6968d1f21be72500bbeea130b1003efca205101364a77086b6abbb7d5`
 
 In this model, zone files are held in decentralized storage (IPFS), where a zone file is uniquely retrievable and verifiable by their zone _file hash_ such as this one:
 ```

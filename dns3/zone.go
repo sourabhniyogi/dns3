@@ -18,7 +18,7 @@ import (
 const (
 	UserAddress      = "0x12233992092D7B405355D771940E5115c17f959F"
 	PrivateKey       = "a5718e79ae2fe43431820cba7315f48ac0a79e5305da6988c9f3358003784d85"
-	DNS3ContractAddr = "0x8116a77cf44457a455ffc24001c521ddeebc9606"
+	DNS3ContractAddr = "0x8c36f7e95f53b5ee7a35ec2dad854308877a0a94"
 	wsEndpointUrl    = "wss://rinkeby.infura.io/ws"
 )
 
@@ -48,7 +48,7 @@ func setConnection(endpointUrl string) (conn *ethclient.Client, err error) {
 	if err != nil {
 		return conn, err
 	} else {
-		fmt.Printf("Successfully connected to: %v\n", endpointUrl)
+		//fmt.Printf("Successfully connected to: %v\n", endpointUrl)
 		return conn, err
 	}
 }
@@ -73,8 +73,9 @@ func setSession(contractAddr common.Address, endpointUrl string, key *ecdsa.Priv
 			Pending: true,
 		},
 		TransactOpts: bind.TransactOpts{
-			From:   authT.From,
-			Signer: authT.Signer,
+			From:     authT.From,
+			Signer:   authT.Signer,
+			GasLimit: 500000,
 		},
 	}
 	return session, nil
@@ -101,7 +102,6 @@ func ParseDomain(request string) (domain string, tld string, err error) {
 
 // Look up in Ethereum the zone file hash based on the domain hash
 func GetZone(domainHash [32]byte) (ipfsHash [32]byte, ipfsHash58 string, err error) {
-	// [Michael] TODO: set up session and do get Call
 
 	key, _ := crypto.HexToECDSA(PrivateKey)
 	session, err := setSession(common.HexToAddress(DNS3ContractAddr), wsEndpointUrl, key)
