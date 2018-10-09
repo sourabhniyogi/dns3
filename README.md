@@ -31,14 +31,14 @@ Recently, the lowest level (3) has been developed into a new blockchain protocol
 
 ### Part 1: DNS3.sol Ethereum Smart Contract
 
-The main idea is that core DNS zone data are kept in an Ethereum Smart Contract like `DNS3.sol` (View on [Rinkeby](https://rinkeby.etherscan.io/address/0x8c36f7e95f53b5ee7a35ec2dad854308877a0a94))
+The main idea is that core DNS zone data are kept in an Ethereum Smart Contract like `DNS3.sol` (View on [Rinkeby](https://rinkeby.etherscan.io/address/0x8a91398997d961495339a1466363a1c48134718e))
 
 
 Domain owners for new TLDs like `.hacker` will manage their DNS entries by:
- * [[txn #1](https://rinkeby.etherscan.io/tx/0xca60930065ab84fbe7fbe162d9cdf7435bd9c92690724aba4d5a26df3569b5e7)] registering their domain with `registerDomain(string _domain)`,
+ * [[txn #1](https://rinkeby.etherscan.io/tx/0x81bc4dd92a56ee7f385288d47a41d6073e85a49f6ec21343ca99df4b90155f04)] registering their domain with `registerDomain(string _domain)`,
  where a domain `eth.hacker` is represented on Ethereum with a domainHash like: `0xb63f160a960a1663c5cec1d7d02e67a44d368affd1d42be3b3554c34fd2dea4b`
 
- * [[txn #2](https://rinkeby.etherscan.io/tx/0xe874da7adb35146a937e1eff57e543caccabb1d5a8f115671d547e1e650a67c5)] updating the zone record for the `domainHash` with `submitZone(bytes ipfsHashByte, bytes32 domainHash)`
+ * [[txn #2](https://rinkeby.etherscan.io/tx/0xa0e7ec04fc026ff4c57b6bcf695a85cf7104bc09bc0d030bc61679de27bcc033)] updating the zone record for the `domainHash` with `submitZone(bytes ipfsHashByte, bytes32 domainHash)`
 
 where the zone file hash `QmXThgG1gUnfywM4e9QpEYDkBZNJwSbpPogJjXtewVgYmi` is represented in a 34-byte `ipfsHashByte`: `0x122087879aa6968d1f21be72500bbeea130b1003efca205101364a77086b6abbb7d5`
 

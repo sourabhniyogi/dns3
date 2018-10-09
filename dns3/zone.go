@@ -18,7 +18,7 @@ import (
 const (
 	UserAddress      = "0x12233992092D7B405355D771940E5115c17f959F"
 	PrivateKey       = "a5718e79ae2fe43431820cba7315f48ac0a79e5305da6988c9f3358003784d85"
-	DNS3ContractAddr = "0x8c36f7e95f53b5ee7a35ec2dad854308877a0a94"
+	DNS3ContractAddr = "0x8a91398997d961495339a1466363a1c48134718e"
 	wsEndpointUrl    = "wss://rinkeby.infura.io/ws"
 )
 
