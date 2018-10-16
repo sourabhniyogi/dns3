@@ -115,7 +115,7 @@ contract DNS3 {
     function submitZone(bytes ipfsHashByte, bytes32 domainHash) public returns (bool) {
         require(OwnedDomain[domainHash] == msg.sender, 'Unauthorized zoneUpdate');
         Multihash memory ipfsHash = _setMultihash(ipfsHashByte);
-        ZoneHash["domainHash"] = ipfsHash;
+        ZoneHash[domainHash] = ipfsHash;
         emit ZoneUpdate(domainHash, ipfsHash.hashFunction, ipfsHash.size, ipfsHash.digest);
         return true;
     }
@@ -123,7 +123,7 @@ contract DNS3 {
 
     function getZone(bytes32 domainHash) public view returns (bytes32 digest, uint8 hashFunction,uint8 size) {
         require(OwnedDomain[domainHash] != 0, "Domain not registered");
-        Multihash memory ipfsHash = ZoneHash["domainHash"];
+        Multihash memory ipfsHash = ZoneHash[domainHash];
         return (ipfsHash.digest, ipfsHash.hashFunction, ipfsHash.size);
     }
 
